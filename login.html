@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group AR System - Login Portal</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            font-family: 'Segoe UI', sans-serif; 
+            overflow: hidden; 
+            position: relative; 
+        }
+    
+        .card { 
+            border: none; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
+            background: rgba(255, 255, 255, 0.9); 
+        }
+        .nav-pills .nav-link { border-radius: 12px; font-weight: 600; color: #6c757d; }
+        .nav-pills .nav-link.active { background-color: #0d6efd; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width:70px; height:70px;">
+                            <i class="bi bi-tools fs-1"></i>
+                        </div>
+                        <h2 class="fw-bold">Group AR System</h2>
+                        <p class="text-muted">Maintenance Request Management System</p>
+                    </div>
+                    
+                    <ul class="nav nav-pills nav-justified mb-4">
+                        <li class="nav-item"><button class="nav-link active fw-bold" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane">Login</button></li>
+                        <li class="nav-item"><button class="nav-link fw-bold" id="reg-tab" data-bs-toggle="pill" data-bs-target="#reg-pane">Register</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        
+                        <div class="tab-pane fade show active" id="login-pane">
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">EMAIL</label>
+                                    <input type="email" id="lEmail" class="form-control" placeholder="Enter the email" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold small">PASSWORD</label>
+                                    <input type="password" id="lPass" class="form-control" placeholder="Enter the password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 btn-lg shadow fw-bold">Sign In</button>
+                            </form>
+                        </div>
+
+                        
+                        <div class="tab-pane fade" id="reg-pane">
+                            <form id="regForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">NAME</label>
+                                    <input type="text" id="rName" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">EMAIL</label>
+                                    <input type="email" id="rEmail" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">PASSWORD</label>
+                                    <input type="password" id="rPass" class="form-control" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold small">IDENTITY</label>
+                                    <select id="rRole" class="form-select">
+                                        <option value="tenant">Tenant</option>
+                                        <option value="worker">Staff</option>
+                                        <option value="admin">Administrator</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100 btn-lg shadow fw-bold">Create Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        let users = JSON.parse(localStorage.getItem('ar_users')) || [
+            { email: 'tenant@test.com', password: '123', role: 'tenant', name: 'John Tenant' },
+            { email: 'staff@test.com', password: '123', role: 'worker', name: 'Mike Worker' },
+            { email: 'admin@test.com', password: '123', role: 'admin', name: 'Project Admin' }
+        ];
+
+        
+        document.getElementById('loginForm').onsubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById('lEmail').value;
+            const pass = document.getElementById('lPass').value;
+            const user = users.find(u => u.email === email && u.password === pass);
+            
+            if (user) {
+                
+                user.role = String(user.role).toLowerCase().trim();
+
+                
+                sessionStorage.setItem('ar_user', JSON.stringify(user));
+                
+                
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else if (user.role === 'tenant') {
+                    window.location.href = 'tenant.html';
+                } else if (user.role === 'worker') {
+                    window.location.href = 'staff.html';
+                }
+            } else {
+                alert("Incorrect email or password.");
+            }
+        };
+
+        
+        document.getElementById('regForm').onsubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById('rEmail').value;
+            if (users.find(u => u.email === email)) return alert("Email already registered.");
+            
+            const newUser = { 
+                name: document.getElementById('rName').value, 
+                email, 
+                password: document.getElementById('rPass').value, 
+                role: document.getElementById('rRole').value 
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('ar_users', JSON.stringify(users));
+            alert("Registration successful! Please login.");
+            location.reload();
+        };
+    </script>
+</body>
+</html>
