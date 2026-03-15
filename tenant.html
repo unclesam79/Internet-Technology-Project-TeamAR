@@ -20,7 +20,8 @@
             margin: 0; 
             overflow-x: hidden; 
         }
-
+        
+        
         .floating-emojis { 
             position: fixed; 
             top: 0; left: 0; width: 100%; height: 100%; 
@@ -36,6 +37,7 @@
             50% { transform: translateY(-15px) rotate(10deg); } 
         }
 
+        
         .sidebar { 
             width: var(--sidebar-w); 
             background: var(--primary-dark); 
@@ -112,6 +114,16 @@
             to { opacity: 1; transform: translateY(0); } 
         }
 
+        
+        .avatar-btn {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .avatar-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
 
         @media (max-width: 992px) {
             .sidebar { width: 80px; padding: 25px 10px; }
@@ -121,9 +133,18 @@
             .nav-link i { margin: 0 !important; font-size: 1.5rem; }
         }
 
+        button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .nav-link:focus {
+            outline: 3px solid #f59e0b;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
+
     <div class="floating-emojis">
         <div class="emoji-item" style="top:5%; left:5%; font-size:3rem;">🔧</div>
         <div class="emoji-item" style="top:12%; left:45%; font-size:2.5rem;">🏗️</div>
@@ -142,6 +163,7 @@
         <div class="emoji-item" style="top:35%; left:85%; font-size:2.5rem;">🔩</div>
     </div>
 
+    
     <div class="sidebar">
         <div class="d-flex align-items-center mb-5 px-2">
             <i class="bi bi-tools text-warning fs-4 me-2"></i>
@@ -182,16 +204,20 @@
             </div>
             <div class="d-flex align-items-center">
                 <div class="text-end me-3 d-none d-md-block">
-                    <p class="mb-0 fw-bold small" id="uRoleLabel">Resident Tenant</p>
+                    <p class="mb-0 fw-bold small" id="uRoleLabel">Tenant</p>
                     <p class="mb-0 text-success small" style="font-size: 0.7rem;">● System Online</p>
                 </div>
-                <i class="bi bi-person-circle fs-2 text-muted"></i>     
+                <button type="button" onclick="switchView('profileView')" class="avatar-btn border-0 bg-transparent p-0">
+                <img src="https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff" 
+                     class="rounded-circle shadow" 
+                     width="50" height="50" 
+                     id="userImgTop" 
+                     alt="User profile avatar">
+                </button>     
             </div>
         </div>
 
-        
         <div id="dashboardView" class="view-pane active">
-            
             <div class="row g-4 mb-4">
                 <div class="col-md-4">
                     <div class="card stat-card bg-primary shadow-sm">
@@ -227,7 +253,7 @@
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Request</th>
+                                        <th>Ticket</th>
                                         <th>Description</th>
                                         <th>Status</th>
                                     </tr>
@@ -239,7 +265,15 @@
                     </div>
                 </div>
                 
-                
+                <div class="col-lg-4">
+                    <div class="card p-4 bg-dark text-white border-0">
+                        <h6 class="fw-bold mb-2 text-warning">Quick Support</h6>
+                        <p class="small opacity-75 mb-3">Facing an urgent issue? Contact our 24/7 onsite team.</p>
+                        <button onclick="switchView('supportView', document.querySelectorAll('.nav-link')[3])" class="btn btn-warning w-100 rounded-pill fw-bold">
+                            <i class="bi bi-chat-dots-fill me-2"></i> Get Online Support
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -250,12 +284,12 @@
                         <h4 class="fw-bold mb-4">Submit a New Request</h4>
                         <form id="reqForm">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">What needs fixing?</label>
+                                <label for="reqTitle" class="form-label fw-bold">What needs fixing?</label>
                                 <input type="text" id="reqTitle" class="form-control form-control-lg shadow-sm" placeholder="Short summary of the issue" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Room / Area</label>
+                                    <label for="reqLoc" class="form-label fw-bold">Room / Area</label>
                                     <select id="reqLoc" class="form-select">
                                         <option>Living Room</option>
                                         <option>Kitchen</option>
@@ -265,7 +299,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Urgency</label>
+                                    <label for="reqUrg" class="form-label fw-bold">Urgency</label>
                                     <select id="reqUrg" class="form-select">
                                         <option value="Normal">Normal (Default)</option>
                                         <option value="High">Emergency</option>
@@ -273,7 +307,7 @@
                                 </div>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Problem Details</label>
+                                <label for="reqDetail" class="form-label fw-bold">Problem Details</label>
                                 <textarea id="reqDetail" class="form-control" rows="3" placeholder="Explain the issue in detail..."></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow">
@@ -285,7 +319,6 @@
             </div>
         </div>
 
-        
         <div id="historyView" class="view-pane">
             <div class="card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -318,7 +351,15 @@
                 <div class="col-lg-6">
                     <div class="card p-4">
                         <h4 class="fw-bold mb-4 text-center">Profile Settings</h4>
-                        
+                        <div class="text-center mb-4 position-relative">
+                            <img src="https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff" id="profilePreview" class="rounded-circle border border-4 border-white shadow" width="120" height="120">
+                            <div class="mt-3">
+                                <label class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    Upload Avatar
+                                    <input type="file" hidden id="avatarInput" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
                         <form id="profileForm">
                             <div class="mb-3">
                                 <label class="form-label fw-bold small text-muted">USER EMAIL</label>
@@ -421,15 +462,18 @@
                 </div>
             </div>
         </div>
+
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        
         let currentUser = JSON.parse(sessionStorage.getItem('ar_user'));
         let allRequests = JSON.parse(localStorage.getItem('ar_requests')) || [];
         let allUsers = JSON.parse(localStorage.getItem('ar_users')) || [];
 
-       
+        
         if (!currentUser || currentUser.role !== 'tenant') {
             window.location.href = 'login.html';
         }
@@ -440,7 +484,9 @@
             document.getElementById('profName').value = currentUser.name;
             document.getElementById('profEmail').value = currentUser.email;
             document.getElementById('profPhone').value = currentUser.phone || '';
-            
+            const avatarUrl = currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=3b82f6&color=fff`;
+            document.getElementById('userImgTop').src = avatarUrl;
+            document.getElementById('profilePreview').src = avatarUrl;
         }
 
         
@@ -448,12 +494,10 @@
             localStorage.setItem('ar_requests', JSON.stringify(allRequests));
             const myRequests = allRequests.filter(r => r.owner === currentUser.email);
             
-            
             document.getElementById('statTotal').innerText = myRequests.length;
             document.getElementById('statProgress').innerText = myRequests.filter(r => r.status === 'Pending').length;
             document.getElementById('statFixed').innerText = myRequests.filter(r => r.status === 'Fixed').length;
 
-            
             const historyBody = document.getElementById('historyTableBody');
             const recentBody = document.getElementById('recentTableBody');
             historyBody.innerHTML = '';
@@ -490,7 +534,7 @@
 
             
         }
-    
+
         function switchView(viewId, el) {
             document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -500,7 +544,7 @@
                 'newRequestView': 'Submit Request',
                 'historyView': 'Request History',
                 'profileView': 'My Profile',
-                'supportView': 'Customer Support'
+                'supportView': 'Help & Support'
             };
             document.getElementById('pageTitle').innerText = titles[viewId];
 
@@ -510,7 +554,6 @@
             }
         }
 
-        
         document.getElementById('reqForm').onsubmit = (e) => {
             e.preventDefault();
             const newReq = {
@@ -531,13 +574,36 @@
             document.getElementById('reqForm').reset();
         };
 
-        
         function deleteReq(id) {
             if (confirm("Permanently cancel this maintenance ticket?")) {
                 allRequests = allRequests.filter(r => r.id !== id);
                 refreshDashboard();
             }
         }
+
+        document.getElementById('avatarInput').onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                document.getElementById('profilePreview').src = base64String;
+                document.getElementById('userImgTop').src = base64String;
+                currentUser.avatar = base64String;
+            };
+            if (file) reader.readAsDataURL(file);
+        };
+
+        document.getElementById('profileForm').onsubmit = (e) => {
+            e.preventDefault();
+            currentUser.name = document.getElementById('profName').value;
+            currentUser.phone = document.getElementById('profPhone').value;
+            const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+            if(userIndex !== -1) allUsers[userIndex] = currentUser;
+            localStorage.setItem('ar_users', JSON.stringify(allUsers));
+            sessionStorage.setItem('ar_user', JSON.stringify(currentUser));
+            alert("Your profile has been updated!");
+            initProfileUI();
+        };
 
         document.getElementById('contactAdminForm').onsubmit = (e) => {
             e.preventDefault();
@@ -559,18 +625,6 @@
             document.getElementById('contactAdminForm').reset();
         };
 
-        document.getElementById('profileForm').onsubmit = (e) => {
-            e.preventDefault();
-            currentUser.name = document.getElementById('profName').value;
-            currentUser.phone = document.getElementById('profPhone').value;
-            const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
-            if(userIndex !== -1) allUsers[userIndex] = currentUser;
-            localStorage.setItem('ar_users', JSON.stringify(allUsers));
-            sessionStorage.setItem('ar_user', JSON.stringify(currentUser));
-            alert("Your profile has been updated!");
-            initProfileUI();
-        };
-
         function filterHistory() {
             const val = document.getElementById('historySearch').value.toLowerCase();
             const rows = document.querySelectorAll('#historyTableBody tr');
@@ -584,7 +638,6 @@
             window.location.href = 'login.html';
         }
 
-        
         initProfileUI();
         refreshDashboard();
     </script>
