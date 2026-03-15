@@ -17,16 +17,50 @@
             overflow: hidden; 
             position: relative; 
         }
+
+        .floating-emojis { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; z-index: -1; 
+        }
+        .emoji-item { 
+            position: absolute; opacity: 0.15; animation: float 6s infinite ease-in-out; 
+        }
+        @keyframes float { 
+            0%, 100% { transform: translateY(0) rotate(0deg); } 
+            50% { transform: translateY(-20px) rotate(15deg); } 
+        }
     
         .card { 
             border: none; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
-            background: rgba(255, 255, 255, 0.9); 
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px);
         }
         .nav-pills .nav-link { border-radius: 12px; font-weight: 600; color: #6c757d; }
         .nav-pills .nav-link.active { background-color: #0d6efd; color: white; }
+
+        .d-none { display: none !important; }
     </style>
 </head>
 <body>
+
+    <div class="floating-emojis" aria-hidden="true">
+        <div class="emoji-item" style="top:5%; left:5%; font-size:3rem;">🔧</div>
+        <div class="emoji-item" style="top:12%; left:30%; font-size:2rem; opacity:0.1;">🛠️</div>
+        <div class="emoji-item" style="top:8%; left:65%; font-size:2.5rem; opacity:0.08;">💧</div>
+        <div class="emoji-item" style="top:20%; left:85%; font-size:2.5rem;">🔨</div>
+        <div class="emoji-item" style="top:35%; left:10%; font-size:3.5rem; opacity:0.1;">🏗️</div>
+        <div class="emoji-item" style="top:30%; left:50%; font-size:2rem; opacity:0.12;">🚪</div>
+        <div class="emoji-item" style="top:55%; left:5%; font-size:2.2rem; opacity:0.09;">🔩</div>
+        <div class="emoji-item" style="top:50%; left:80%; font-size:3rem; opacity:0.11;">⚡</div>
+        <div class="emoji-item" style="top:65%; left:65%; font-size:3rem;">🧰</div>
+        <div class="emoji-item" style="top:75%; left:20%; font-size:4rem;">⚙️</div>
+        <div class="emoji-item" style="top:85%; left:45%; font-size:2.5rem; opacity:0.1;">🔩</div>
+        <div class="emoji-item" style="top:92%; left:10%; font-size:2.8rem; opacity:0.13;">🏠</div>
+        <div class="emoji-item" style="top:15%; left:75%; font-size:2.2rem;">🔨</div>
+        <div class="emoji-item" style="top:45%; left:25%; font-size:2.6rem;">🔧</div>
+        <div class="emoji-item" style="top:60%; left:40%; font-size:2.5rem; opacity:0.1;">🔌</div>
+        <div class="emoji-item" style="top:40%; left:90%; font-size:3rem; opacity:0.1;">⚡</div>
+        <div class="emoji-item" style="top:78%; left:55%; font-size:2rem; opacity:0.09;">🧰</div>
+    </div>
 
     <div class="container">
         <div class="row justify-content-center">
@@ -40,55 +74,79 @@
                         <p class="text-muted">Maintenance Request Management System</p>
                     </div>
                     
-                    <ul class="nav nav-pills nav-justified mb-4">
-                        <li class="nav-item"><button class="nav-link active fw-bold" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane">Login</button></li>
-                        <li class="nav-item"><button class="nav-link fw-bold" id="reg-tab" data-bs-toggle="pill" data-bs-target="#reg-pane">Register</button></li>
-                    </ul>
-
-                    <div class="tab-content">
-                        
-                        <div class="tab-pane fade show active" id="login-pane">
-                            <form id="loginForm">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small">EMAIL</label>
-                                    <input type="email" id="lEmail" class="form-control" placeholder="Enter the email" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold small">PASSWORD</label>
-                                    <input type="password" id="lPass" class="form-control" placeholder="Enter the password" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 btn-lg shadow fw-bold">Sign In</button>
-                            </form>
-                        </div>
-
-                        
-                        <div class="tab-pane fade" id="reg-pane">
-                            <form id="regForm">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small">NAME</label>
-                                    <input type="text" id="rName" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small">EMAIL</label>
-                                    <input type="email" id="rEmail" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small">PASSWORD</label>
-                                    <input type="password" id="rPass" class="form-control" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold small">IDENTITY</label>
-                                    <select id="rRole" class="form-select">
-                                        <option value="tenant">Tenant</option>
-                                        <option value="worker">Staff</option>
-                                        <option value="admin">Administrator</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-success w-100 btn-lg shadow fw-bold">Create Account</button>
-                            </form>
+                    <div id="authTabs">
+                        <ul class="nav nav-pills nav-justified mb-4">
+                            <li class="nav-item"><button class="nav-link active fw-bold" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane">Login</button></li>
+                            <li class="nav-item"><button class="nav-link fw-bold" id="reg-tab" data-bs-toggle="pill" data-bs-target="#reg-pane">Register</button></li>
+                        </ul>
+    
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane fade show active" id="login-pane">
+                                <form id="loginForm">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small">EMAIL</label>
+                                        <input type="email" id="lEmail" class="form-control" placeholder="Enter the email" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold small">PASSWORD</label>
+                                        <input type="password" id="lPass" class="form-control" placeholder="Enter the password" required>
+                                    </div>
+                                    <div class="text-end mb-4">
+                                        <a href="#" id="toForgotBtn" class="small text-decoration-none">Forgot Password?</a>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 btn-lg shadow fw-bold">Sign In</button>
+                                </form>
+                            </div>
+    
+                            
+                            <div class="tab-pane fade" id="reg-pane">
+                                <form id="regForm">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small">NAME</label>
+                                        <input type="text" id="rName" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small">EMAIL</label>
+                                        <input type="email" id="rEmail" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small">PASSWORD</label>
+                                        <input type="password" id="rPass" class="form-control" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold small">IDENTITY</label>
+                                        <select id="rRole" class="form-select">
+                                            <option value="tenant">Tenant</option>
+                                            <option value="worker">Staff</option>
+                                            <option value="admin">Administrator</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 btn-lg shadow fw-bold">Create Account</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                    
+                    <div id="forgotPane" class="d-none">
+                        <h4 class="fw-bold mb-3 text-center">Reset Password</h4>
+                        <p class="text-muted small text-center mb-4">Enter email and new password to reset.</p>
+                        <form id="resetForm">
+                            <div class="mb-3">
+                                <label for="resetEmail" class="form-label fw-bold small">REGISTERED EMAIL</label>
+                                <input type="email" id="resetEmail" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="resetNewPass" class="form-label fw-bold small">NEW PASSWORD</label>
+                                <input type="password" id="resetNewPass" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-dark w-100 btn-lg shadow fw-bold mb-3">Update Password</button>
+                            <button type="button" id="backToLoginBtn" class="btn btn-link w-100 text-decoration-none text-muted small">Back to Login</button>
+                        </form>
+                        <div id="resetStatus" class="small mt-2 text-center" aria-live="polite"></div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -104,48 +162,61 @@
         ];
 
         
+        const authTabs = document.getElementById('authTabs');
+        const forgotPane = document.getElementById('forgotPane');
+
+        document.getElementById('toForgotBtn').onclick = (e) => {
+            e.preventDefault();
+            authTabs.classList.add('d-none');
+            forgotPane.classList.remove('d-none');
+        };
+
+        document.getElementById('backToLoginBtn').onclick = () => {
+            forgotPane.classList.add('d-none');
+            authTabs.classList.remove('d-none');
+        };
+
+        document.getElementById('resetForm').onsubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            const newPass = document.getElementById('resetNewPass').value;
+            const statusBox = document.getElementById('resetStatus');
+            const userIndex = users.findIndex(u => u.email === email);
+
+            if (userIndex !== -1) {
+                users[userIndex].password = newPass;
+                localStorage.setItem('ar_users', JSON.stringify(users));
+                statusBox.className = "small mt-2 text-center text-success";
+                statusBox.innerText = "Success! Password updated.";
+                setTimeout(() => { document.getElementById('backToLoginBtn').click(); }, 1500);
+            } else {
+                statusBox.className = "small mt-2 text-center text-danger";
+                statusBox.innerText = "Error: User email not found.";
+            }
+        };
+
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
             const email = document.getElementById('lEmail').value;
             const pass = document.getElementById('lPass').value;
             const user = users.find(u => u.email === email && u.password === pass);
-            
             if (user) {
-                
-                user.role = String(user.role).toLowerCase().trim();
-
-                
                 sessionStorage.setItem('ar_user', JSON.stringify(user));
-                
-                
-                if (user.role === 'admin') {
-                    window.location.href = 'admin.html';
-                } else if (user.role === 'tenant') {
-                    window.location.href = 'tenant.html';
-                } else if (user.role === 'worker') {
-                    window.location.href = 'staff.html';
-                }
+                if (user.role === 'admin') window.location.href = 'admin.html';
+                else if (user.role === 'tenant') window.location.href = 'tenant.html';
+                else window.location.href = 'staff.html';
             } else {
                 alert("Incorrect email or password.");
             }
         };
 
-        
         document.getElementById('regForm').onsubmit = (e) => {
             e.preventDefault();
             const email = document.getElementById('rEmail').value;
             if (users.find(u => u.email === email)) return alert("Email already registered.");
-            
-            const newUser = { 
-                name: document.getElementById('rName').value, 
-                email, 
-                password: document.getElementById('rPass').value, 
-                role: document.getElementById('rRole').value 
-            };
-            
-            users.push(newUser);
+            users.push({ name: document.getElementById('rName').value, email, password: document.getElementById('rPass').value, role: document.getElementById('rRole').value });
             localStorage.setItem('ar_users', JSON.stringify(users));
-            alert("Registration successful! Please login.");
+            alert("Registration successful!");
             location.reload();
         };
     </script>
