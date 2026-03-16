@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrator Portal - Maintenance Management System</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -24,7 +23,29 @@
             overflow-x: hidden; 
         }
         
-        
+       
+        .floating-emojis { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
+            z-index: 0; 
+        }
+
+        .emoji-item { 
+            position: absolute; 
+            opacity: 0.1; 
+            animation: float 6s infinite ease-in-out; 
+        }
+
+        @keyframes float { 
+            0%, 100% { transform: translateY(0) rotate(0deg); } 
+            50% { transform: translateY(-20px) rotate(15deg); } 
+        }
+
+
         .sidebar { 
             width: var(--sidebar-w); 
             background: var(--primary-dark); 
@@ -138,9 +159,37 @@
             .nav-link { justify-content: center; }
         }
 
+        button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .nav-link:focus {
+            outline: 3px solid #f59e0b;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
+
+    <div class="floating-emojis">
+        <div class="emoji-item" style="top:5%; left:5%; font-size:3rem;">🛡️</div>
+        <div class="emoji-item" style="top:12%; left:30%; font-size:2rem; opacity:0.1;">⚙️</div>
+        <div class="emoji-item" style="top:8%; left:65%; font-size:2.5rem; opacity:0.08;">📊</div>
+        <div class="emoji-item" style="top:20%; left:85%; font-size:2.5rem;">🧰</div>
+        <div class="emoji-item" style="top:35%; left:10%; font-size:3.5rem; opacity:0.1;">🔧</div>
+        <div class="emoji-item" style="top:30%; left:50%; font-size:2rem; opacity:0.12;">🛡️</div>
+        <div class="emoji-item" style="top:55%; left:5%; font-size:2.2rem; opacity:0.09;">🔩</div>
+        <div class="emoji-item" style="top:50%; left:80%; font-size:3rem; opacity:0.11;">⚡</div>
+        <div class="emoji-item" style="top:65%; left:65%; font-size:3rem;">📊</div>
+        <div class="emoji-item" style="top:75%; left:20%; font-size:4rem;">⚙️</div>
+        <div class="emoji-item" style="top:85%; left:45%; font-size:2.5rem; opacity:0.1;">🔩</div>
+        <div class="emoji-item" style="top:92%; left:10%; font-size:2.8rem; opacity:0.13;">🗂️</div>
+        <div class="emoji-item" style="top:15%; left:75%; font-size:2.2rem;">🔨</div>
+        <div class="emoji-item" style="top:45%; left:25%; font-size:2.6rem;">🔧</div>
+        <div class="emoji-item" style="top:60%; left:40%; font-size:2.5rem; opacity:0.1;">🔌</div>
+        <div class="emoji-item" style="top:40%; left:90%; font-size:3rem; opacity:0.1;">⚡</div>
+        <div class="emoji-item" style="top:78%; left:55%; font-size:2rem; opacity:0.09;">🧰</div>
+    </div>
 
     <div class="sidebar">
         <div class="d-flex align-items-center mb-5 px-2">
@@ -148,9 +197,9 @@
             <h5 class="fw-bold mb-0 small" style="line-height: 1.2;">Maintenance Request<br>Management Portal</h5>
         </div>
         <nav class="nav flex-column mb-auto">
-            <div class="nav-link active" onclick="switchView('overviewView', this)"><i class="bi bi-speedometer2 me-2"></i> <span>Operational Overview</span></div>
-            <div class="nav-link" onclick="switchView('userView', this)"><i class="bi bi-people-fill me-2"></i> <span>Users Control</span></div>
-            <div class="nav-link" onclick="switchView('ticketView', this)"><i class="bi bi-ticket-detailed-fill me-2"></i> <span>Ticket Hub</span></div>
+            <div class="nav-link active" onclick="switchView('overviewView', this)"><i class="bi bi-speedometer2 me-2"></i> <span>Overview</span></div>
+            <div class="nav-link" onclick="switchView('userView', this)"><i class="bi bi-people-fill me-2"></i> <span>Users Management</span></div>
+            <div class="nav-link" onclick="switchView('ticketView', this)"><i class="bi bi-ticket-detailed-fill me-2"></i> <span>Request Hub</span></div>
             <div class="nav-link" onclick="switchView('supportView', this)"><i class="bi bi-chat-left-dots-fill me-2"></i> <span>Support Inbox</span> <span class="badge bg-danger ms-auto rounded-pill d-none" id="supportBadge">0</span></div>
         </nav>
         <div>
@@ -164,27 +213,29 @@
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
-                <h2 class="fw-bold mb-1" id="pageTitle">Operational Overview</h2>
+                <h2 class="fw-bold mb-1" id="pageTitle">Overview</h2>
                 <p class="text-muted mb-0">Admin: <span id="adminName" class="text-primary fw-bold">Admin</span> | <span class="small" id="liveTime">Loading...</span></p>
             </div>
             <div class="d-flex align-items-center gap-3">
                 <div class="text-end d-none d-md-block">
                     <p class="mb-0 fw-bold small">System Status: <span class="text-success">Live</span></p>
-                    <p class="mb-0 text-muted" style="font-size: 0.7rem;">Data Synced Successfully</p>
+                    
                 </div>
-                <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" class="rounded-circle shadow" width="50" height="50" style="cursor:pointer" onclick="switchView('profileView')">
+                <img id="adminImgTop" src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" class="rounded-circle shadow" width="50" height="50" style="cursor:pointer" onclick="switchView('profileView')">
             </div>
         </div>
 
+        
         <div id="overviewView" class="view-pane active">
             <div class="row g-4 mb-4">
                 <div class="col-md-3"><div class="card p-4"><div class="d-flex align-items-center mb-2"><div class="stat-icon bg-primary-subtle text-primary me-3"><i class="bi bi-people"></i></div><h3 class="fw-bold mb-0" id="statUsers">0</h3></div><small class="text-muted">Total Users</small></div></div>
                 <div class="col-md-3"><div class="card p-4 border-start border-danger border-5"><div class="d-flex align-items-center mb-2"><div class="stat-icon bg-danger-subtle text-danger me-3"><i class="bi bi-exclamation-triangle"></i></div><h3 class="fw-bold mb-0" id="statHigh">0</h3></div><small class="text-muted">Emergency Requests</small></div></div>
-                <div class="col-md-3"><div class="card p-4 border-start border-warning border-5"><div class="d-flex align-items-center mb-2"><div class="stat-icon bg-warning-subtle text-warning me-3"><i class="bi bi-hourglass-split"></i></div><h3 class="fw-bold mb-0" id="statPending">0</h3></div><small class="text-muted">Pending Tickets</small></div></div>
+                <div class="col-md-3"><div class="card p-4 border-start border-warning border-5"><div class="d-flex align-items-center mb-2"><div class="stat-icon bg-warning-subtle text-warning me-3"><i class="bi bi-hourglass-split"></i></div><h3 class="fw-bold mb-0" id="statPending">0</h3></div><small class="text-muted">Pending Requests</small></div></div>
                 <div class="col-md-3"><div class="card p-4"><div class="d-flex align-items-center mb-2"><div class="stat-icon bg-success-subtle text-success me-3"><i class="bi bi-patch-check"></i></div><h3 class="fw-bold mb-0" id="statFixed">0</h3></div><small class="text-muted">Resolved History</small></div></div>
             </div>
 
             <div class="row g-4 mb-4">
+                
                 <div class="col-lg-12">
                     <div class="card p-4 h-100">
                         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -196,6 +247,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4" onclick="switchView('ticketView')"><div class="shortcut-btn"><i class="bi bi-ticket-detailed fs-4 mb-2 d-block text-warning"></i> Request Hub</div></div>
+                <div class="col-md-3" onclick="switchView('userView')"><div class="shortcut-btn"><i class="bi bi-person-plus fs-4 mb-2 d-block text-success"></i> Users Management</div></div>
+                <div class="col-md-3" onclick="switchView('supportView')"><div class="shortcut-btn"><i class="bi bi-chat-square-text fs-4 mb-2 d-block text-info"></i> Support</div></div>
             </div>
         </div>
 
@@ -224,12 +281,34 @@
         
         <div id="ticketView" class="view-pane">
             <div class="card p-4">
-                <h5 class="fw-bold mb-4">Global Ticket Hub</h5>
+                <h5 class="fw-bold mb-4">Global Request Hub</h5>
                 <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Issue</th><th>Owner</th><th>Urgency</th><th>Status</th><th>Action</th></tr></thead><tbody id="ticketTableBody"></tbody></table></div>
             </div>
         </div>
 
-        <div id="profileView" class="view-pane"><div class="row justify-content-center"><div class="col-lg-6"><div class="card p-4"><h4 class="fw-bold mb-4 text-center">Admin Profile</h4><form id="profileForm"><div class="mb-3"><label class="small fw-bold text-muted">EMAIL</label><input type="text" id="profEmail" class="form-control bg-light" readonly></div><div class="mb-4"><label class="small fw-bold text-muted">NAME</label><input type="text" id="profName" class="form-control" required></div><button type="submit" class="btn btn-primary w-100 rounded-pill shadow">Update Profile</button></form></div></div></div></div>
+        <div id="profileView" class="view-pane">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card p-4">
+                        <h4 class="fw-bold mb-4 text-center">Admin Profile</h4>
+                        <div class="text-center mb-4">
+                            <img src="" id="profilePreview" class="rounded-circle border border-4 border-white shadow" width="120" height="120">
+                            <div class="mt-3">
+                                <label class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                    Update Photo
+                                    <input type="file" hidden id="avatarInput" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+                        <form id="profileForm">
+                            <div class="mb-3"><label class="small fw-bold text-muted">EMAIL</label><input type="text" id="profEmail" class="form-control bg-light" readonly></div>
+                            <div class="mb-4"><label class="small fw-bold text-muted">NAME</label><input type="text" id="profName" class="form-control" required></div>
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill shadow">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     
@@ -262,12 +341,50 @@
             document.getElementById('adminName').innerText = currentUser.name;
             document.getElementById('profName').value = currentUser.name;
             document.getElementById('profEmail').value = currentUser.email;
+            
+            const avatarUrl = currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=6366f1&color=fff`;
+            document.getElementById('adminImgTop').src = avatarUrl;
+            document.getElementById('profilePreview').src = avatarUrl;
+
             setInterval(() => { if(document.getElementById('liveTime')) document.getElementById('liveTime').innerText = new Date().toLocaleString(); }, 1000);
             refreshData();
         }
 
-        function refreshData() {
+        document.getElementById('avatarInput').onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                document.getElementById('profilePreview').src = base64String;
+                document.getElementById('adminImgTop').src = base64String;
+                currentUser.avatar = base64String;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        document.getElementById('profileForm').onsubmit = (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('profName').value;
+            currentUser.name = newName;
+
             
+            let users = JSON.parse(localStorage.getItem(KEY_USERS)) || [];
+            const idx = users.findIndex(u => u.email === currentUser.email);
+            if (idx !== -1) {
+                users[idx] = currentUser;
+                localStorage.setItem(KEY_USERS, JSON.stringify(users));
+            }
+
+            
+            sessionStorage.setItem('ar_user', JSON.stringify(currentUser));
+            document.getElementById('adminName').innerText = newName;
+            
+            alert("Profile saved successfully!");
+            refreshData();
+        };
+
+        function refreshData() {
             let rawUsers = JSON.parse(localStorage.getItem(KEY_USERS)) || JSON.parse(localStorage.getItem('ar_portal_users'));
             allUsers = Array.isArray(rawUsers) ? rawUsers : DEFAULT_USERS;
             
@@ -277,6 +394,7 @@
             let rawMessages = JSON.parse(localStorage.getItem(KEY_MSG));
             allMessages = Array.isArray(rawMessages) ? rawMessages : [];
 
+            
             const pending = allRequests.filter(r => (r.status || "").toLowerCase() === 'pending' || (r.status || "").toLowerCase() === 'in progress');
             const fixedCount = allRequests.filter(r => (r.status || "").toLowerCase() === 'fixed').length;
             
@@ -290,6 +408,7 @@
             if(document.getElementById('statFixed')) document.getElementById('statFixed').innerText = fixedCount;
             if(document.getElementById('statHigh')) document.getElementById('statHigh').innerText = highUrgency.length;
             
+            document.getElementById('adminName').innerText = currentUser.name;
             const badge = document.getElementById('supportBadge');
             if(badge) {
                 badge.innerText = allMessages.length;
@@ -320,7 +439,6 @@
                 }
             }
 
-            
             const userBody = document.getElementById('userTableBody');
             if(userBody) {
                 userBody.innerHTML = '';
@@ -330,7 +448,6 @@
                 });
             }
 
-            
             const ticketBody = document.getElementById('ticketTableBody');
             if(ticketBody) {
                 ticketBody.innerHTML = '';
@@ -341,7 +458,6 @@
                 });
             }
 
-            
             const msgList = document.getElementById('messageList');
             if(msgList) {
                 msgList.innerHTML = '';
