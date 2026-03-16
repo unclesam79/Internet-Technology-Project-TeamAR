@@ -46,6 +46,44 @@
         }
 
         .d-none { display: none !important; }
+
+        
+        @media (max-width: 576px) {
+    
+            .container, .card { 
+                width: 95% !important; 
+                margin: 20px auto !important; 
+                padding: 1.5rem !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            }
+
+    
+            h2, h5 { text-align: center; }
+            ul { 
+                display: flex; 
+                justify-content: center; 
+                padding: 0; 
+                list-style: none; 
+                gap: 15px; 
+            }
+
+            input, select, .btn {
+                width: 100% !important; 
+                height: 45px;
+                margin-bottom: 15px !important;
+            }
+
+            label {
+                font-weight: bold;
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            .floating-emojis {
+                opacity: 0.3; 
+            }
+        }
+
     </style>
 </head>
 <body>
