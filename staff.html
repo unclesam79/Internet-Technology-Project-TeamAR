@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Maintenance Management</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -21,7 +20,23 @@
             overflow-x: hidden; 
         }
         
+        
+        .floating-emojis { 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; z-index: 0; 
+        }
+        .emoji-item { 
+            position: absolute; 
+            opacity: 0.1; 
+            animation: float 6s infinite ease-in-out; 
+        }
+        @keyframes float { 
+            0%, 100% { transform: translateY(0) rotate(0deg); } 
+            50% { transform: translateY(-15px) rotate(10deg); } 
+        }
 
+        
         .sidebar { 
             width: var(--sidebar-w); 
             background: var(--primary-dark); 
@@ -63,6 +78,23 @@
             box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4); 
         }
         
+        .note-pad {
+            background: #fef9c3 !important; 
+            border-left: 5px solid #facc15 !important;
+            min-height: 250px;
+        }
+        .note-pad textarea {
+            background: transparent;
+            border: none;
+            width: 100%;
+            height: 180px;
+            resize: none;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #713f12;
+            line-height: 1.6;
+        }
+        .note-pad textarea:focus { outline: none; }
+
         .card { 
             border: none; 
             border-radius: 20px; 
@@ -97,6 +129,24 @@
             to { opacity: 1; transform: translateY(0); } 
         }
 
+        .avatar-btn {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .avatar-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .announcement-item {
+            border-left: 4px solid var(--accent-teal);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ticket-action-btn {
+            min-width: 120px;
+        }
 
         @media (max-width: 992px) {
             .sidebar { width: 80px; padding: 25px 10px; }
@@ -105,11 +155,37 @@
             .nav-link { justify-content: center; }
             .nav-link i { margin: 0 !important; font-size: 1.5rem; }
         }
-        
+        button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .nav-link:focus,
+        a:focus {
+            outline: 3px solid #f59e0b;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
 
+    <div class="floating-emojis">
+        <div class="emoji-item" style="top:5%; left:5%; font-size:3rem;">🧰</div>
+        <div class="emoji-item" style="top:12%; left:45%; font-size:2.5rem;">👷</div>
+        <div class="emoji-item" style="top:8%; left:85%; font-size:2.2rem;">⚡</div>
+        <div class="emoji-item" style="top:25%; left:15%; font-size:2.8rem;">🔧</div>
+        <div class="emoji-item" style="top:30%; left:60%; font-size:2rem;">🛠️</div>
+        <div class="emoji-item" style="top:22%; left:92%; font-size:3.5rem;">🔩</div>
+        <div class="emoji-item" style="top:45%; left:40%; font-size:2.5rem;">🪜</div>
+        <div class="emoji-item" style="top:50%; left:10%; font-size:3.2rem;">🔌</div>
+        <div class="emoji-item" style="top:60%; left:30%; font-size:3rem;">⚙️</div>
+        <div class="emoji-item" style="top:85%; left:15%; font-size:4rem;">🦺</div>
+        <div class="emoji-item" style="top:90%; left:55%; font-size:2.4rem;">🔨</div>
+        <div class="emoji-item" style="top:15%; left:70%; font-size:2rem;">💧</div>
+        <div class="emoji-item" style="top:42%; left:18%; font-size:1.8rem;">⚡</div>
+        <div class="emoji-item" style="top:75%; left:80%; font-size:3rem;">🧰</div>
+    </div>
+
+    
     <div class="sidebar">
         <div class="d-flex align-items-center mb-5 px-2">
             <i class="bi bi-tools text-info fs-4 me-2"></i>
@@ -124,7 +200,8 @@
                 <span class="badge bg-danger ms-auto rounded-pill" id="navBadgeHigh">0</span>
             </div>
         </nav>
-        <div>
+
+        <div class="mt-auto pt-3">
             <hr class="text-white-50">
             <div class="nav-link" onclick="switchView('profileView', document.querySelectorAll('.nav-link')[2])">
                 <i class="bi bi-person-badge me-2"></i> <span>My Profile</span>
@@ -137,7 +214,6 @@
 
     
     <div class="main-content">
-        
         <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
                 <h1 class="fw-bold mb-1" id="pageTitle">Staff Dashboard</h1>
@@ -157,9 +233,7 @@
             </div>
         </div>
 
-        
         <div id="dashboardView" class="view-pane active">
-            
             <div class="row g-4 mb-4">
                 <div class="col-md-4">
                     <div class="card stat-card bg-secondary shadow-sm">
@@ -184,31 +258,54 @@
                 </div>
             </div>
 
-            
-            <div class="card p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0"><i class="bi bi-lightning-fill text-warning me-2"></i>Action Needed</h5>
-                    <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="switchView('tasksView', document.querySelectorAll('.nav-link')[1])">Go to Work Orders</button>
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-lightning-fill text-warning me-2"></i>Action Needed</h5>
+                            <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="switchView('tasksView', document.querySelectorAll('.nav-link')[1])">Go to Work Orders</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr><th>ID</th><th>Location</th><th>Issue</th><th>Status</th></tr>
+                                </thead>
+                                <tbody id="actionNeededBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Ticket ID</th>
-                                <th>Location</th>
-                                <th>Issue</th>
-                                <th>Priority</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="actionNeededBody">
-                        </tbody>
-                    </table>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card p-4 shadow-sm border-0 h-100">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Workload Analysis</h5>
+                        <p class="small text-muted mb-2">Completion Progress:</p>
+                        <div class="progress mb-3" style="height: 12px; border-radius: 10px;">
+                            <div id="analyticsProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small fw-bold" id="completionPercent">0% Fixed</span>
+                            <span class="small text-muted" id="totalTasksCount">0 Tasks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card p-4 note-pad shadow-sm border-0 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-sticky-fill me-2"></i>Quick Notes</h6>
+                            <span class="badge bg-warning text-dark small">Local Save</span>
+                        </div>
+                        <textarea id="quickNotesArea" placeholder="Record measurements or IDs here..."></textarea>
+                        <div class="text-end mt-2">
+                            <button class="btn btn-sm btn-link text-danger p-0" onclick="clearNotes()">Clear All</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        
         <div id="tasksView" class="view-pane">
             <div class="card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -240,18 +337,26 @@
                 <div class="col-lg-6">
                     <div class="card p-4">
                         <h4 class="fw-bold mb-4 text-center">Staff Profile</h4>
-                        
+                        <div class="text-center mb-4 position-relative">
+                            <img src="" id="profilePreview" class="rounded-circle border border-4 border-white shadow" width="120" height="120">
+                            <div class="mt-3">
+                                <label class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                    Update Photo
+                                    <input type="file" hidden id="avatarInput" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
                         <form id="profileForm">
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">WORKER EMAIL</label>
+                                <label for="profEmail" class="form-label fw-bold small text-muted">WORKER EMAIL</label>
                                 <input type="text" id="profEmail" class="form-control bg-light" readonly>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">FULL NAME</label>
+                                <label for="profName" class="form-label fw-bold small text-muted">FULL NAME</label>
                                 <input type="text" id="profName" class="form-control" required>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label fw-bold small text-muted">CONTACT NUMBER</label>
+                                <label for="profPhone" class="form-label fw-bold small text-muted">CONTACT NUMBER</label>
                                 <input type="text" id="profPhone" class="form-control" placeholder="Optional">
                             </div>
                             <button type="submit" class="btn text-white w-100 rounded-pill fw-bold py-2 shadow" style="background-color: var(--accent-teal);">
@@ -268,7 +373,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        
         let currentUser = JSON.parse(sessionStorage.getItem('ar_user'));
         
         if (!currentUser || currentUser.role !== 'worker') {
@@ -282,6 +386,28 @@
             document.getElementById('profName').value = currentUser.name;
             document.getElementById('profEmail').value = currentUser.email;
             document.getElementById('profPhone').value = currentUser.phone || '';
+            const avatarUrl = currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
+            document.getElementById('userImgTop').src = avatarUrl;
+            document.getElementById('profilePreview').src = avatarUrl;
+
+            const savedNotes = localStorage.getItem('ar_staff_notes');
+            if (savedNotes) {
+                document.getElementById('quickNotesArea').value = savedNotes;
+            }
+        }
+
+        const mainNote = document.getElementById('quickNotesArea');
+
+        mainNote.oninput = (e) => {
+            localStorage.setItem('ar_staff_notes', e.target.value);
+        };
+
+        function clearNotes() {
+            if (confirm("Clear all your notes?")) {
+                mainNote.value = '';
+                sideNote.value = '';
+                localStorage.removeItem('ar_staff_notes');
+            }
         }
 
         function refreshDashboard() {
@@ -291,16 +417,21 @@
             const emergencyTasks = allRequests.filter(r => (r.status === 'Pending' || r.status === 'In Progress') && r.urgency === 'High');
             const fixedTasks = allRequests.filter(r => r.status === 'Fixed');
 
-        
             document.getElementById('statPending').innerText = pendingTasks.length;
             document.getElementById('statEmergency').innerText = emergencyTasks.length;
             document.getElementById('statFixed').innerText = fixedTasks.length;
+
+            const total = allRequests.length;
+            const percent = total > 0 ? Math.round((fixedTasks.length / total) * 100) : 0;
             
+            document.getElementById('analyticsProgressBar').style.width = percent + '%';
+            document.getElementById('completionPercent').innerText = percent + '% Fixed';
+            document.getElementById('totalTasksCount').innerText = total + ' Tasks';
+
             
             document.getElementById('navBadgeHigh').innerText = emergencyTasks.length;
             document.getElementById('navBadgeHigh').classList.toggle('d-none', emergencyTasks.length === 0);
 
-            
             const actionBody = document.getElementById('actionNeededBody');
             actionBody.innerHTML = '';
             
@@ -318,7 +449,6 @@
                 `;
             });
 
-            
             const workBody = document.getElementById('workOrdersBody');
             workBody.innerHTML = '';
 
@@ -357,13 +487,11 @@
             });
         }
 
-        
         window.updateTicketStatus = function(ticketId, newStatus) {
             let allRequests = JSON.parse(localStorage.getItem('ar_requests')) || [];
             let ticketIndex = allRequests.findIndex(r => r.id === ticketId);
             
             if (ticketIndex !== -1) {
-                
                 if (newStatus === 'Fixed' && !confirm("Are you sure this issue is completely fixed?")) {
                     return;
                 }
@@ -373,7 +501,6 @@
             }
         };
 
-        
         function switchView(viewId, el) {
             document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -390,6 +517,18 @@
                 el.classList.add('active');
             }
         }
+
+        document.getElementById('avatarInput').onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                document.getElementById('profilePreview').src = base64String;
+                document.getElementById('userImgTop').src = base64String;
+                currentUser.avatar = base64String;
+            };
+            if (file) reader.readAsDataURL(file);
+        };
 
         document.getElementById('profileForm').onsubmit = (e) => {
             e.preventDefault();
