@@ -80,6 +80,10 @@ DATABASES = {
     }
 }
 
+# Use a fast hasher during tests so password hashing doesn't slow the suite down
+if 'test' in __import__('sys').argv:
+    PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
