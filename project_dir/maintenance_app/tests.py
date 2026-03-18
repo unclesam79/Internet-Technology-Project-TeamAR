@@ -121,7 +121,7 @@ class PageAccessTests(SetUpMixin, TestCase):
             'name': 'New Tenant', 'email': 'new@test.com',
             'password': 'pass123', 'role': 'tenant',
         })
-        self.assertRedirects(response, reverse('login'))
+        self.assertRedirects(response, reverse('login') + '?registered=1')
         self.assertTrue(User.objects.filter(email='new@test.com').exists())
 
     def test_register_duplicate_email_shows_error(self):
