@@ -319,7 +319,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Data from Django context
-        const currentUser = { name: "{{ user_name|escapejs }}", email: "{{ user_email|escapejs }}" };
+        const currentUser = { name: "{{ user_name|escapejs }}", email: "{{ user_email|escapejs }}", avatar: "{{ user_avatar|escapejs }}" };
         let allUsers    = {{ users_json|safe }};
         let allRequests = {{ requests_json|safe }};
         let allMessages = {{ messages_json|safe }};
@@ -349,7 +349,7 @@
             document.getElementById('adminName').innerText = currentUser.name;
             document.getElementById('profName').value = currentUser.name;
             document.getElementById('profEmail').value = currentUser.email;
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=6366f1&color=fff`;
+            const avatarUrl = currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=6366f1&color=fff`;
             document.getElementById('adminImgTop').src = avatarUrl;
             document.getElementById('profilePreview').src = avatarUrl;
             setInterval(() => { if (document.getElementById('liveTime')) document.getElementById('liveTime').innerText = new Date().toLocaleString(); }, 1000);
@@ -425,8 +425,10 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onloadend = () => {
+                currentUser.avatar = reader.result;
                 document.getElementById('profilePreview').src = reader.result;
                 document.getElementById('adminImgTop').src = reader.result;
+                post('{% url "api_profile_update" %}', { avatar: reader.result });
             };
             reader.readAsDataURL(file);
         };

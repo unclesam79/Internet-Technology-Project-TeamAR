@@ -48,7 +48,7 @@ def register(request):
             return render(request, 'maintenance_app/login.html', {'reg_error': 'Email already registered.'})
         user = User.objects.create_user(username=email, email=email, password=password, first_name=name)
         UserProfile.objects.create(user=user, role=role)
-        return redirect('login')
+        return redirect('/login/?registered=1')
     return redirect('login')
 
 
@@ -75,6 +75,7 @@ def maintenance_admin(request):
     return render(request, 'maintenance_app/admin.html', {
         'user_name': request.user.get_full_name() or request.user.username,
         'user_email': request.user.email,
+        'user_avatar': request.user.userprofile.avatar,
         'users_json': json.dumps(users_data),
         'requests_json': json.dumps(requests_data),
         'messages_json': json.dumps(messages_data),
@@ -100,6 +101,7 @@ def staff(request):
         'user_name': request.user.get_full_name() or request.user.username,
         'user_email': request.user.email,
         'user_phone': request.user.userprofile.phone,
+        'user_avatar': request.user.userprofile.avatar,
         'requests_json': json.dumps(requests_data),
         'note_body_json': json.dumps(note_body),
     })
@@ -120,6 +122,7 @@ def tenant(request):
         'user_name': request.user.get_full_name() or request.user.username,
         'user_email': request.user.email,
         'user_phone': request.user.userprofile.phone,
+        'user_avatar': request.user.userprofile.avatar,
         'requests_json': json.dumps(requests_data),
     })
 
@@ -229,8 +232,14 @@ def api_profile_update(request):
     if 'name' in data:
         user.first_name = data['name']
         user.save()
+    profile_dirty = False
     if 'phone' in data:
         user.userprofile.phone = data['phone']
+        profile_dirty = True
+    if 'avatar' in data:
+        user.userprofile.avatar = data['avatar']
+        profile_dirty = True
+    if profile_dirty:
         user.userprofile.save()
     return JsonResponse({'ok': True})
 
