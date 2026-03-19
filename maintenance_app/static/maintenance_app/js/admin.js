@@ -47,7 +47,7 @@ function renderAll() {
         userBody.innerHTML = '';
         allUsers.forEach(u => {
             const isAdmin = u.role === 'admin';
-            userBody.innerHTML += `<tr><td><div class="fw-bold">${u.name}</div></td><td class="small text-muted">${u.email}</td><td><span class="badge ${isAdmin ? 'bg-primary' : 'bg-light text-dark border'}">${u.role}</span></td><td><span class="text-success small"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem"></i> Active</span></td><td class="text-end"><button class="btn btn-sm btn-light border me-1" onclick="editUser(${u.id})"><i class="bi bi-pencil"></i></button>${isAdmin ? '' : `<button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${u.id})"><i class="bi bi-trash"></i></button>`}</td></tr>`;
+            userBody.innerHTML += `<tr><td><div class="fw-bold">${u.name}</div></td><td class="small text-muted">${u.email}</td><td><span class="badge ${isAdmin ? 'bg-primary' : 'bg-light text-dark border'}">${u.role}</span></td><td><span class="text-success small"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem"></i> Active</span></td><td class="text-end"><button class="btn btn-sm btn-light border me-1" onclick="editUser(${u.id})" aria-label="Edit ${u.name}"><i class="bi bi-pencil"></i></button>${isAdmin ? '' : `<button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${u.id})" aria-label="Delete ${u.name}"><i class="bi bi-trash"></i></button>`}</td></tr>`;
         });
     }
 

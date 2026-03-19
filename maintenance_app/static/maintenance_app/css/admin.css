@@ -27,6 +27,10 @@
     cursor: pointer;
     color: #475569;
 }
+/* Accessible contrast for text on #f1f5f9 background */
+.admin-name-text { color: #0950b8; }
+.status-live-text { color: #0f6a3a; }
+
 .shortcut-btn:hover {
     background: var(--accent-indigo);
     color: white;

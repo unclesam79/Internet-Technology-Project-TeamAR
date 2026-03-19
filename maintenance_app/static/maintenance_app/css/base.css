@@ -109,6 +109,10 @@ body {
 .avatar-btn { cursor: pointer; transition: 0.3s; }
 .avatar-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
 
+/* Logout link — lighter red for contrast on dark sidebar */
+.logout-link { color: #ff6b6b !important; }
+.logout-link:hover { color: #ff9999 !important; }
+
 /* Accessibility: visible focus ring */
 button:focus, input:focus, select:focus, textarea:focus,
 .nav-link:focus, a:focus {
