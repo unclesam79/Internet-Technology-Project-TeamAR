@@ -1,3 +1,3 @@
 venv
 __pycache__/
-project_dir/db.sqlite3
+db.sqlite3
