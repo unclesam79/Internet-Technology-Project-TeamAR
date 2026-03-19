@@ -1,0 +1,64 @@
+{% comment %}
+Base layout for dashboard pages (admin, staff, tenant).
+Provides: Bootstrap imports, sidebar/main-content structure, floating emojis,
+shared CSS variables, profile UI helpers, and common JS utilities.
+Each child template defines its own theme colours, sidebar nav, and page content.
+{% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Maintenance Management System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'maintenance_app/css/base.css' %}">
+    <style>
+        :root {
+            --primary-dark: {% block primary_dark %}#1e293b{% endblock %};
+            {% block css_vars %}{% endblock %}
+        }
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+
+    <!-- Decorative floating emojis -->
+    <div class="floating-emojis">
+        {% block emojis %}{% endblock %}
+    </div>
+
+    <!-- Sidebar navigation -->
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-5 px-2">
+            {% block sidebar_brand %}{% endblock %}
+        </div>
+        <nav class="nav flex-column mb-auto">
+            {% block sidebar_nav %}{% endblock %}
+        </nav>
+        <div>
+            <hr class="text-white-50">
+            {% block sidebar_footer %}{% endblock %}
+            <a href="{% url 'logout' %}" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-left me-2"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block modals %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // URL passed to shared JS for avatar upload
+        const profileUpdateUrl = '{% url "api_profile_update" %}';
+    </script>
+    <script src="{% static 'maintenance_app/js/base.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

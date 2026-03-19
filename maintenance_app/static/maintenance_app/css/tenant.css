@@ -1,0 +1,5 @@
+/* Active nav uses blue accent */
+.nav-link.active {
+    background: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}

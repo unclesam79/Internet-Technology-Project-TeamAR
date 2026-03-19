@@ -117,19 +117,20 @@ class PageAccessTests(SetUpMixin, TestCase):
         self.assertRedirects(response, reverse('login'))
 
     def test_register_creates_user_and_redirects(self):
-        response = self.client.post(reverse('register'), {
-            'name': 'New Tenant', 'email': 'new@test.com',
-            'password': 'pass123', 'role': 'tenant',
-        })
-        self.assertRedirects(response, reverse('login') + '?registered=1')
+        response = self.client.post(reverse('register'),
+            json.dumps({'name': 'New Tenant', 'email': 'new@test.com',
+                        'password': 'pass123', 'role': 'tenant'}),
+            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(User.objects.filter(email='new@test.com').exists())
 
     def test_register_duplicate_email_shows_error(self):
-        response = self.client.post(reverse('register'), {
-            'name': 'Dup', 'email': 'tenant@test.com',
-            'password': 'pass123', 'role': 'tenant',
-        })
-        self.assertContains(response, 'already registered')
+        response = self.client.post(reverse('register'),
+            json.dumps({'name': 'Dup', 'email': 'tenant@test.com',
+                        'password': 'pass123', 'role': 'tenant'}),
+            content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('already registered', response.json()['error'])
 
 
 # ---------------------------------------------------------------------------
