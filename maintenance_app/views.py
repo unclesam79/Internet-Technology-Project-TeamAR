@@ -26,7 +26,7 @@ from .models import MaintenanceRequest, StaffNote, SupportMessage, UserProfile
 
 def login(request):
     if request.method == 'POST':
-        email = request.POST['email']
+        email = request.POST['email'].lower()
         password = request.POST['password']
         user = authenticate(request, username=email, password=password)
         if user:
@@ -54,7 +54,7 @@ def register(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request.'}, status=400)
         name = data.get('name', '')
-        email = data.get('email', '')
+        email = data.get('email', '').lower()
         password = data.get('password', '')
         role = data.get('role', 'tenant')
         if User.objects.filter(username=email).exists():
@@ -153,7 +153,7 @@ def tenant(request):
 @require_POST
 def api_users_add(request):
     data = json.loads(request.body)
-    email = data.get('email', '')
+    email = data.get('email', '').lower()
     if User.objects.filter(username=email).exists():
         return JsonResponse({'error': 'Email already in use.'}, status=400)
     user = User.objects.create_user(
@@ -174,7 +174,7 @@ def api_users_edit(request, user_id):
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
     user.first_name = data.get('name', user.first_name)
-    email = data.get('email', user.email)
+    email = data.get('email', user.email).lower()
     user.email = email
     user.username = email
     user.save()
