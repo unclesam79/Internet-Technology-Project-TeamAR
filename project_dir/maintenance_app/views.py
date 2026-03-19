@@ -40,16 +40,20 @@ def logout_view(request):
 
 def register(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        email = request.POST['email']
-        password = request.POST['password']
-        role = request.POST['role']
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request.'}, status=400)
+        name = data.get('name', '')
+        email = data.get('email', '')
+        password = data.get('password', '')
+        role = data.get('role', 'tenant')
         if User.objects.filter(username=email).exists():
-            return render(request, 'maintenance_app/login.html', {'reg_error': 'Email already registered.'})
+            return JsonResponse({'error': 'This email is already registered.'}, status=400)
         user = User.objects.create_user(username=email, email=email, password=password, first_name=name)
         UserProfile.objects.create(user=user, role=role)
-        return redirect('/login/?registered=1')
-    return redirect('login')
+        return JsonResponse({'ok': True})
+    return render(request, 'maintenance_app/login.html')
 
 
 @login_required(login_url='login')
