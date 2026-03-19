@@ -20,7 +20,10 @@ async function post(url, data = {}) {
     return res.json();
 }
 
-// Toggle between dashboard view panes
+// Toggle between dashboard view panes without a page reload (SPA pattern).
+// Each role dashboard is a single HTML page where sections are shown/hidden
+// via CSS class toggling, avoiding full-page navigations and keeping state
+// (e.g. fetched data) in JS memory for the session.
 function switchView(viewId, el) {
     document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
     document.getElementById(viewId).classList.add('active');

@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import MaintenanceRequest, StaffNote, SupportMessage, UserProfile
+
+admin.site.register(UserProfile)
+admin.site.register(MaintenanceRequest)
+admin.site.register(SupportMessage)
+admin.site.register(StaffNote)

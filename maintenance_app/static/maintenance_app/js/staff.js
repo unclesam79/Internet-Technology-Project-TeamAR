@@ -78,7 +78,7 @@ function refreshDashboard() {
 
 async function updateTicketStatus(ticketId, newStatus) {
     if (newStatus === 'Fixed' && !confirm("Are you sure this issue is completely fixed?")) return;
-    await post(`/api/requests/${ticketId}/status/`, { status: newStatus });
+    await post(urls.requestStatus.replace('/0/', `/${ticketId}/`), { status: newStatus });
     const idx = allRequests.findIndex(r => r.id === ticketId);
     if (idx !== -1) allRequests[idx].status = newStatus;
     refreshDashboard();

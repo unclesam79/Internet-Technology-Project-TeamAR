@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+# UserProfile extends Django's built-in User with role and contact details.
+# avatar is stored as a base64 data URL so no media file handling is required.
 class UserProfile(models.Model):
     ROLE_CHOICES = [('admin', 'Admin'), ('worker', 'Worker'), ('tenant', 'Tenant')]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -33,7 +35,9 @@ class SupportMessage(models.Model):
 
 
 class StaffNote(models.Model):
-    # Per-worker scratchpad, one note per worker
+    # Per-worker scratchpad: OneToOneField enforces the one-note-per-worker
+    # constraint at the database level, so api_notes_save can safely use
+    # get_or_create without risk of duplicate rows.
     author = models.OneToOneField(User, on_delete=models.CASCADE, related_name='note')
     body = models.TextField(blank=True)
     updated = models.DateTimeField(auto_now=True)

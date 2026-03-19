@@ -217,6 +217,8 @@
         const staffNoteBody = {{ note_body_json|safe }};
         const urls = {
             notesSave: '{% url "api_notes_save" %}',
+            // URL template: replace the placeholder '0' with the real ID at call time
+            requestStatus: '{% url "api_request_status" request_id=0 %}',
         };
     </script>
     <script src="{% static 'maintenance_app/js/staff.js' %}"></script>

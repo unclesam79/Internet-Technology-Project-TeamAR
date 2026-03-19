@@ -52,7 +52,7 @@ document.getElementById('reqForm').onsubmit = async (e) => {
 
 async function cancelReq(id) {
     if (!confirm("Permanently cancel this maintenance ticket?")) return;
-    await post(`/api/requests/${id}/cancel/`);
+    await post(urls.requestCancel.replace('/0/', `/${id}/`));
     allRequests = allRequests.filter(r => r.id !== id);
     refreshDashboard();
 }

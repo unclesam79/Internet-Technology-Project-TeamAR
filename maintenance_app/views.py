@@ -13,6 +13,15 @@ from .models import MaintenanceRequest, StaffNote, SupportMessage, UserProfile
 
 # ---------------------------------------------------------------------------
 # Page views
+#
+# Role-based access pattern: each dashboard view checks the user's role via
+# UserProfile and raises PermissionDenied for any mismatch. This keeps
+# authorisation logic co-located with the view rather than in middleware.
+#
+# Data delivery: rather than separate AJAX calls on page load, each dashboard
+# view serialises the required querysets to JSON and embeds them directly in
+# the template context. This means a single HTTP request fully loads the page
+# and the JS can render the SPA-style views without additional round trips.
 # ---------------------------------------------------------------------------
 
 def login(request):
@@ -133,6 +142,11 @@ def tenant(request):
 
 # ---------------------------------------------------------------------------
 # API endpoints (all POST, return JSON)
+#
+# All mutation endpoints are POST-only and protected by @login_required so
+# they cannot be triggered by unauthenticated cross-site requests. CSRF
+# protection is handled by Django middleware; the JS helper in base.js
+# includes the csrftoken cookie value in the X-CSRFToken request header.
 # ---------------------------------------------------------------------------
 
 @login_required

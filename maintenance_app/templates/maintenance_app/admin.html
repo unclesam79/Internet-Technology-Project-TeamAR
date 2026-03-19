@@ -162,6 +162,10 @@
         const urls = {
             usersAdd: '{% url "api_users_add" %}',
             messagesClear: '{% url "api_messages_clear" %}',
+            // URL templates: replace the placeholder '0' with the real ID at call time
+            usersEdit: '{% url "api_users_edit" user_id=0 %}',
+            usersDelete: '{% url "api_users_delete" user_id=0 %}',
+            requestsDelete: '{% url "api_requests_delete" request_id=0 %}',
         };
     </script>
     <script src="{% static 'maintenance_app/js/admin.js' %}"></script>

@@ -115,7 +115,7 @@ document.getElementById('userForm').onsubmit = async (e) => {
         if (result.error) { alert(result.error); return; }
         allUsers.push(result.user);
     } else {
-        await post(`/api/users/${id}/edit/`, data);
+        await post(urls.usersEdit.replace('/0/', `/${id}/`), data);
         const idx = allUsers.findIndex(u => u.id === parseInt(id));
         if (idx !== -1) allUsers[idx] = { ...allUsers[idx], ...data };
     }
@@ -125,14 +125,14 @@ document.getElementById('userForm').onsubmit = async (e) => {
 
 async function deleteUser(id) {
     if (!confirm('Permanently remove this user?')) return;
-    await post(`/api/users/${id}/delete/`);
+    await post(urls.usersDelete.replace('/0/', `/${id}/`));
     allUsers = allUsers.filter(u => u.id !== id);
     renderAll();
 }
 
 async function deleteTicket(id) {
     if (!confirm('Delete this maintenance ticket?')) return;
-    await post(`/api/requests/${id}/delete/`);
+    await post(urls.requestsDelete.replace('/0/', `/${id}/`));
     allRequests = allRequests.filter(t => t.id !== id);
     renderAll();
 }

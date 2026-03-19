@@ -339,6 +339,9 @@
         const urls = {
             requestCreate: '{% url "api_request_create" %}',
             messageSend: '{% url "api_message_send" %}',
+            // URL templates: replace the placeholder '0' with the real ID at call time
+            requestCancel: '{% url "api_request_cancel" request_id=0 %}',
+            requestStatus: '{% url "api_request_status" request_id=0 %}',
         };
     </script>
     <script src="{% static 'maintenance_app/js/tenant.js' %}"></script>
